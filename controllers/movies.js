@@ -2,7 +2,12 @@ const Movie = require('../models/movie');
 const NotFoundError = require('../errors/not-found-err');
 const BadRequest = require('../errors/bad-request');
 const Forbidden = require('../errors/forbidden');
-const { BadRequestMess, NotFoundMovie, ForbiddenMess } = require('../utils/err-messages');
+const {
+  BadRequestMess,
+  NotFoundMovie,
+  ForbiddenMess,
+  BadRequestMessMovUpd,
+} = require('../utils/err-messages');
 
 module.exports.createMovie = (req, res, next) => {
   const {
@@ -14,9 +19,9 @@ module.exports.createMovie = (req, res, next) => {
     image,
     trailer,
     thumbnail,
-    movieid,
-    nameru,
-    nameen,
+    movieId,
+    nameRU,
+    nameEN,
   } = req.body;
 
   Movie.create({
@@ -28,15 +33,14 @@ module.exports.createMovie = (req, res, next) => {
     image,
     trailer,
     thumbnail,
-    movieid,
-    nameru,
-    nameen,
+    movieId,
+    nameRU,
+    nameEN,
     owner: req.user._id,
   })
     .then((movie) => res.send(movie))
     .catch((err) => {
-      console.log(err);
-      if (err.name === 'ValidationError') { throw new BadRequest(BadRequestMess.concat(' при обновлении фильма')); } else next(err);
+      if (err.name === 'ValidationError') { throw new BadRequest(BadRequestMessMovUpd); } else next(err);
     })
     .catch(next);
 };

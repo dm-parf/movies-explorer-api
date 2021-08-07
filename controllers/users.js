@@ -11,6 +11,9 @@ const {
   NotFoundUser,
   ConflictMess,
   SuccessEnter,
+  SuccessExit,
+  BadRequestMessUserCreate,
+  BadRequestMessUserUpd,
 } = require('../utils/err-messages');
 
 let S_KEY = '';
@@ -31,10 +34,9 @@ module.exports.getMe = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const {
-    name, email, password,
+    name, email, userpassword,
   } = req.body;
-
-  bcrypt.hash(password, 10)
+  bcrypt.hash(userpassword, 10)
     .then((hash) => User.create({
       name,
       email,
@@ -45,7 +47,7 @@ module.exports.createUser = (req, res, next) => {
       res.send(result);
     })
     .catch((err) => {
-      if (err.name === 'CastError') { throw new BadRequest(BadRequestMess.concat(' при создании профиля')); }
+      if (err.name === 'CastError') { throw new BadRequest(BadRequestMessUserCreate); }
       if (err.name === 'MongoError' && err.code === 11000) { throw new Conflict(ConflictMess); } else next(err);
     })
     .catch(next);
@@ -63,7 +65,8 @@ module.exports.updateUser = (req, res, next) => {
       return res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError' || err.name === 'ValidationError') { throw new BadRequest(BadRequestMess.concat(' при обновлении профиля')); } else next(err);
+      if (err.name === 'CastError' || err.name === 'ValidationError') { throw new BadRequest(BadRequestMessUserUpd); }
+      if (err.name === 'MongoError' && err.code === 11000) { throw new Conflict(ConflictMess); } else next(err);
     })
     .catch(next);
 };
@@ -90,5 +93,5 @@ module.exports.login = (req, res, next) => {
 
 module.exports.logout = (req, res) => {
   res.clearCookie('jwt');
-  return res.status(200).redirect('/signin');
+  return res.status(200).send(SuccessExit); // .redirect(/signin)
 };

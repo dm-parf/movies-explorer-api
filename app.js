@@ -1,18 +1,16 @@
 const express = require('express');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi } = require('celebrate');
 const cors = require('cors');
 
 require('dotenv').config();
 
-const { createUser, login, logout } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const error = require('./middlewares/error');
 const noway = require('./middlewares/noway');
+const { limiter } = require('./middlewares/limiter');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
@@ -21,11 +19,6 @@ const { prodPort, prodFront, prodMongo } = require('./utils/constants');
 const { PORT = prodPort, FRONT_URL = prodFront, MONGO_URL = prodMongo } = process.env;
 
 const app = express();
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 50,
-});
 
 app.use(cors({
   origin: FRONT_URL,
@@ -66,20 +59,7 @@ mongoose.connect(MONGO_URL, {
   useUnifiedTopology: true,
 });
 
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), login);
-app.post('/logout', logout);
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-  }),
-}), createUser);
+app.use('/auth', require('./routes/auth'));
 
 app.use(auth);
 
@@ -92,6 +72,4 @@ app.use(errorLogger);
 
 app.use(error);
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});
+app.listen(PORT, () => {});

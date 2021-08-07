@@ -1,10 +1,11 @@
+const { ServerError } = require('../utils/err-messages');
+
 module.exports = ((
-  // eslint-disable-next-line no-unused-vars
-  err, req, res, next,
+  err, req, res,
 ) => {
   const { statusCode = 500, message } = err;
 
   res
     .status(statusCode)
-    .send({ message: statusCode === 500 ? 'На сервере произошла ошибка' : message });
+    .send({ message: statusCode === 500 ? ServerError : message });
 });
