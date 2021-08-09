@@ -34,16 +34,17 @@ module.exports.getMe = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const {
-    name, email, userpassword,
+    name, email, password,
   } = req.body;
-  bcrypt.hash(userpassword, 10)
+  bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name,
       email,
       password: hash,
     }))
     .then((user) => {
-      const { password, ...result } = user.toJSON();
+      const result = user.toJSON();
+      delete result.password;
       res.send(result);
     })
     .catch((err) => {

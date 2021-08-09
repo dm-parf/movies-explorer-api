@@ -59,12 +59,12 @@ mongoose.connect(MONGO_URL, {
   useUnifiedTopology: true,
 });
 
-app.use('/auth', require('./routes/auth'));
+app.use('', require('./routes/auth'));
 
 app.use(auth);
 
-app.use('/users', require('./routes/users'));
-app.use('/movies', require('./routes/movies'));
+app.use('', require('./routes/users'));
+app.use('', require('./routes/movies'));
 
 app.use('*', noway);
 

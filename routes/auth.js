@@ -14,9 +14,9 @@ router.post('/signin', celebrate({
 router.post('/logout', logout);
 router.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().not(''),
+    name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
-    userpassword: Joi.string().required().not(''),
+    password: Joi.string().required().not(''),
   }),
 }), createUser);
 
