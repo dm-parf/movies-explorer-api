@@ -1,0 +1,15 @@
+module.exports.BadRequestMess = 'Переданы некорректные данные';
+module.exports.BadRequestMessMovUpd = 'Переданы некорректные данные при обновлении фильма';
+module.exports.BadRequestMessUserCreate = 'Переданы некорректные данные при создании профиля';
+module.exports.BadRequestMessUserUpd = 'Переданы некорректные данные при обновлении профиля';
+module.exports.NotFoundUser = 'Пользователь по указанному _id не найден';
+module.exports.ConflictMess = 'Пользователь с таким email существует';
+module.exports.SuccessEnter = 'Успешный вход в систему.';
+module.exports.SuccessExit = 'Успешный выход из системы.';
+module.exports.NotFoundMovie = 'Фильм с указанным _id не найден';
+module.exports.ForbiddenMess = 'Нет прав на удаление фильма';
+module.exports.NotFoundURL = 'Запрашиваемый ресурс не найден';
+module.exports.ServerError = 'На сервере произошла ошибка';
+module.exports.NotValidURL = 'Неправильный формат ссылки';
+module.exports.NotValidEmail = 'Неправильный формат почты';
+module.exports.NotValidUserData = 'Неправильные почта или пароль';
