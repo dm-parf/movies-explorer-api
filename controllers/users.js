@@ -10,8 +10,6 @@ const {
   BadRequestMess,
   NotFoundUser,
   ConflictMess,
-  SuccessEnter,
-  SuccessExit,
   BadRequestMessUserCreate,
   BadRequestMessUserUpd,
 } = require('../utils/err-messages');
@@ -78,13 +76,14 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, S_KEY, { expiresIn: '7d' });
-
+      const result = user.toJSON();
+      delete result.password;
       res
         .cookie('jwt', token, {
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
         })
-        .send({ message: SuccessEnter });
+        .send(result);
     })
     .catch((err) => {
       throw new Unauthorized(err.message);
@@ -94,5 +93,5 @@ module.exports.login = (req, res, next) => {
 
 module.exports.logout = (req, res) => {
   res.clearCookie('jwt');
-  return res.status(200).send(SuccessExit); // .redirect(/signin)
+  return res.status(200).redirect('/signin');
 };
